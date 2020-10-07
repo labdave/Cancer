@@ -111,7 +111,7 @@ class FASTQProcessor:
         """
         with dnaio.open(fastq_file) as f:
             for read in f:
-                return read.name.split(" ", 1)[0]
+                return read.name.split(" ", 1)[0].split("/")[0]
 
     @classmethod
     def pair_fastq_files(cls, r1_list, r2_list):
