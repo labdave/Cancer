@@ -206,6 +206,7 @@ class FASTQProcessor:
             return worker_class(*args, **kwargs).start(in_queue, out_queue)
         except:
             # Put a negative number into output queue so that the main process knows there is an error.
+            traceback.print_exc()
             out_queue.put(-1)
             return 0
 

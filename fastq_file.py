@@ -24,7 +24,7 @@ class ReadIdentifier:
     @SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=36
     @ERR194147.3 HSQ1004:134:C0D8DACXX:3:1101:1318:114841/2
     @NB552316:26:HWFLNBGXF:1:11101:26601:1229 1:N:0:GCACAACT+CAAGTCGT
-
+    @NB552316:79:HNJJ3BGXG:1:11101:10002:13076/1
     """
 
     INSTRUMENT_PATTERN = r"^(?P<instrument>[\w-]+):(?:(?P<run_id>[0-9]+):)?(?:(?P<flowcell>\w*[a-zA-Z]\w*):)?"
@@ -38,8 +38,8 @@ class ReadIdentifier:
     def __init__(self, line):
         if line.startswith("@"):
             line = line[1:]
-        self.array = line[1:].split(" ")
-        self.identifier = self.array[0]
+        self.array = line.split(" ")
+        self.identifier = self.array[0].split("/")[0]
         self.__info = None
 
     @property
