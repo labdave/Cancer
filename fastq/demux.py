@@ -314,7 +314,7 @@ class DemultiplexDualIndexWorker(DemultiplexWorker):
 
             # mismatch = editdistance.eval(barcode_i7, adapter_i7) + editdistance.eval(barcode_i5, adapter_i5)
             if mismatch < self.max_error.get(adapter, 0):
-                return barcode
+                return adapter
         return None
 
     def process_read_pair(self, read_pair):
@@ -327,6 +327,7 @@ class DemultiplexDualIndexWorker(DemultiplexWorker):
             # TODO: Write unmatched reads.
             self.add_count("unmatched")
             return DemultiplexWriter.BARCODE_NOT_MATCHED, read1, read2
+        self.add_count('matched')
         self.add_count(barcode)
         return barcode, read1, read2
 
