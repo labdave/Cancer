@@ -3,10 +3,41 @@ import logging
 import click
 import json
 import gzip
+import argparse
 from datetime import datetime
 
-from fastq_file import IlluminaFASTQ
+from .fastq_file import IlluminaFASTQ
 from Aries.storage import StorageFile
+
+
+def configure_argparser(argparser_obj):
+
+    # Pipeline name
+    argparser_obj.add_argument("-i", "--input-file",
+                               action="store",
+                               dest="input_file",
+                               required=True,
+                               help="Path to input GZipped FASTQ file")
+
+    # Deprecated pipeline flag
+    argparser_obj.add_argument("-o", "--output-file",
+                               action="store",
+                               dest="output_file",
+                               required=True,
+                               help="Path to JSON file to store the generated barcode stats")
+
+    # Verbosity
+    argparser_obj.add_argument("-v",
+                               action='count',
+                               dest='verbosity',
+                               required=False,
+                               default=0,
+                               help="Increase verbosity of the program."
+                                    "Multiple -v's increase the verbosity level:\n"
+                                    "   0 = Errors\n"
+                                    "   1 = Errors + Warnings\n"
+                                    "   2 = Errors + Warnings + Info\n"
+                                    "   3 = Errors + Warnings + Info + Debug")
 
 
 def configure_logging(verbosity):
@@ -41,27 +72,16 @@ def configure_logging(verbosity):
 
     logging.getLogger().setLevel(level)
 
+def main():
 
-@click.command()
-@click.option('-i',
-              '--input-file',
-              required=True,
-              type=click.STRING,
-              help="GZipped FASTQ File"
-              )
-@click.option('-o',
-              '--output-file',
-              required=True,
-              type=click.STRING,
-              help="JSON file to store the stats"
-              )
-@click.option('-v',
-              '--verbosity',
-              count=True,
-              help="Set the level of log output."
-              )
-def main(input_file, output_file, verbosity):
-    configure_logging(verbosity=verbosity)
+    # Authenticate with the cluster
+    argparser = argparse.ArgumentParser(prog="GenerateBarcodeStats")
+    configure_argparser(argparser)
+
+    # Parse the arguments
+    args = argparser.parse_args()
+
+    configure_logging(verbosity=args.verbosity)
 
     logger = logging.getLogger("GENERATE_BARCODE_STATS")
 
@@ -70,7 +90,7 @@ def main(input_file, output_file, verbosity):
 
     logger.info(f'Generating stats started on {start}')
 
-    _analyze_barcode(input_file, output_file, logger)
+    _analyze_barcode(args.input_file, args.output_file, logger)
 
     # end time of parsing
     end = datetime.now()
