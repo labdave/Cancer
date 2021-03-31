@@ -1,6 +1,5 @@
 import sys
 import logging
-import click
 import json
 import gzip
 import argparse
