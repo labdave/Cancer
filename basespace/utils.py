@@ -46,10 +46,8 @@ def build_api_url(relative_url, **kwargs):
     Returns: The full URL for making API request.
 
     """
-    global bs_api
-    if not bs_api:
-        access_token = get_access_token()
-        bs_api = WebAPI(API_SERVER, access_token=access_token)
+    access_token = get_access_token()
+    bs_api = WebAPI(API_SERVER, access_token=access_token)
     
     url = bs_api.build_url(relative_url, **kwargs)
     return url
